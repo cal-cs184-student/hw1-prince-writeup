@@ -23,6 +23,50 @@
 			body {
 				font-family: 'Inter', sans-serif;
 			}
+
+			.comparison-grid {
+				display: grid;
+				grid-template-columns: repeat(2, minmax(0, 1fr));
+				gap: 20px;
+				width: min(1100px, calc(100vw - 40px));
+				position: relative;
+				left: 50%;
+				transform: translateX(-50%);
+				margin: 24px 0;
+			}
+
+			.comparison-grid.three-column {
+				grid-template-columns: repeat(3, minmax(0, 1fr));
+				width: min(1350px, calc(100vw - 40px));
+			}
+
+			.comparison-grid figure {
+				margin: 0;
+			}
+
+			.comparison-grid img,
+			.single-result img {
+				display: block;
+				width: 100%;
+				height: auto;
+			}
+
+			.comparison-grid figcaption,
+			.single-result figcaption {
+				margin-top: 8px;
+			}
+
+			.single-result {
+				width: min(800px, 100%);
+				margin: 24px auto;
+			}
+
+			@media (max-width: 700px) {
+				.comparison-grid,
+				.comparison-grid.three-column {
+					grid-template-columns: 1fr;
+				}
+			}
 		</style>
 	</head>
 	<body>
@@ -32,23 +76,31 @@
 
 		<br>
 
-		Link to webpage: (TODO) <a href="https://cs184.eecs.berkeley.edu/fa26">cs184.eecs.berkeley.edu/fa26</a>
+		Link to webpage: <a href="https://cal-cs184-student.github.io/hw1-prince-writeup/">cs184.eecs.berkeley.edu/fa26</a>
 		
 		<br>
 
-		Link to GitHub repository: (TODO) <a href="https://cs184.eecs.berkeley.edu/fa26">cs184.eecs.berkeley.edu/fa26</a>
+		Link to GitHub repository: <a href="https://github.com/cal-cs184-student/hw1-prince">cs184.eecs.berkeley.edu/fa26</a>
 
-		<figure>
+		<!-- <figure>
 			<img src="assets/lion.jpg" alt="Lion" style="width:50%"/>
 			<figcaption>You can add images with captions!</figcaption>
-		</figure>
+		</figure> -->
 
 		<!--
 		We've already added one heading per task, to make your write-up as navigable when grading. Please fit your write-up within these sections!
 		-->
 
 		<h2>Overview</h2>
-		Give a high-level overview of what you implemented in this homework. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the homework.
+
+		<p>
+			In this assignment we implement a simple rasterizer for a simplified version of SVG files. Starting with drawing single-color triangles,
+			we then use a small grid of blocks to speed up rasterization.
+			Next we add supersampling to make the triangle edges smoother. And also implement under block sampling.
+			Another interesting part is transforms: we use homogeneous coordinates for translation, scaling, and rotation, and add keyboard controls to rotate the whole view.
+			We also use barycentric coordinates to interpolate colors and texture coordinates across triangles. In the end we implement nearest and bilinear texture sampling,
+			then add mipmap level sampling to reduce aliasing. Together these parts give us a vector graphics renderer that can display simplified SVG files.
+		</p>
 
 		<h2>Task 1: Drawing Single-Color Triangles</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
@@ -78,21 +130,110 @@
 			  </tr>
 			</table>
 		</div>
-		
-		<h2>Task 2: Antialiasing by Supersampling</h2>
+
+
+		<figure>
+			<img src="assets/task1_defalut.png" alt="Triangle rasterization under default viewing parameters" style="width:100%"/>
+			<figcaption>Figure 1.1: Triangle rasterization under default viewing parameters</figcaption>
+		</figure>
+
+
+
+<h2>Task 2: Antialiasing by Supersampling</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+		<div class="comparison-grid">
+			<figure>
+				<img src="assets/task1_defalut.png" alt="1 sample per pixel (no supersampling)"/>
+				<figcaption>Figure 2.1: 1 sample per pixel (no supersampling)</figcaption>
+			</figure>
+			<figure>
+				<img src="assets/task2_samplerate=4.png" alt="4 samples per pixel"/>
+				<figcaption>Figure 2.2: 4 samples per pixel</figcaption>
+			</figure>
+			<figure>
+				<img src="assets/task2_samplerate=9.png" alt="9 samples per pixel"/>
+				<figcaption>Figure 2.3: 9 samples per pixel</figcaption>
+			</figure>
+			<figure>
+				<img src="assets/task2_samplerate=16.png" alt="16 samples per pixel"/>
+				<figcaption>Figure 2.4: 16 samples per pixel</figcaption>
+			</figure>
+		</div>
 
 		<h2>Task 3: Transforms</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
+		<figure class="single-result">
+			<img src="assets/task3_robot.png" alt="Robot rendered with SVG transforms"/>
+			<figcaption>Figure 3.1: Robot rendered with SVG transforms</figcaption>
+		</figure>
+
 		<h2>Task 4: Barycentric coordinates</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+		<div class="comparison-grid">
+			<figure>
+				<img src="assets/task4.png" alt="Color interpolation with barycentric coordinates"/>
+				<figcaption>Figure 4.1: Color interpolation with barycentric coordinates</figcaption>
+			</figure>
+			<figure>
+				<img src="assets/task4_rgb_triangle.png" alt="RGB triangle with interpolated vertex colors"/>
+				<figcaption>Figure 4.2: RGB triangle with interpolated vertex colors</figcaption>
+			</figure>
+		</div>
 
 		<h2>Task 5: "Pixel sampling" for texture mapping</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
+		<div class="comparison-grid">
+			<figure>
+				<img src="assets/task5_nearest_1.png" alt="Nearest pixel sampling, 1 sample per pixel"/>
+				<figcaption>Figure 5.1: Nearest pixel sampling, 1 sample per pixel</figcaption>
+			</figure>
+			<figure>
+				<img src="assets/task5_bilinear_1.png" alt="Bilinear pixel sampling, 1 sample per pixel"/>
+				<figcaption>Figure 5.2: Bilinear pixel sampling, 1 sample per pixel</figcaption>
+			</figure>
+			<figure>
+				<img src="assets/task5_nearest_16.png" alt="Nearest pixel sampling, 16 samples per pixel"/>
+				<figcaption>Figure 5.3: Nearest pixel sampling, 16 samples per pixel</figcaption>
+			</figure>
+			<figure>
+				<img src="assets/task5_bilinear_16.png" alt="Bilinear pixel sampling, 16 samples per pixel"/>
+				<figcaption>Figure 5.4: Bilinear pixel sampling, 16 samples per pixel</figcaption>
+			</figure>
+		</div>
+
 		<h2>Task 6: "Level Sampling" with mipmaps for texture mapping</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+		<div class="comparison-grid three-column">
+			<figure>
+				<img src="assets/task6_nearest_zero.png" alt="Nearest pixel sampling; mipmap level 0"/>
+				<figcaption>Figure 6.1: Nearest pixel sampling; mipmap level 0</figcaption>
+			</figure>
+			<figure>
+				<img src="assets/task6_nearest_nearest.png" alt="Nearest pixel sampling; nearest mipmap level"/>
+				<figcaption>Figure 6.2: Nearest pixel sampling; nearest mipmap level</figcaption>
+			</figure>
+			<figure>
+				<img src="assets/task6_nearest_bilinear.png" alt="Nearest pixel sampling; linear mipmap level blending"/>
+				<figcaption>Figure 6.3: Nearest pixel sampling; linear mipmap level blending</figcaption>
+			</figure>
+			<figure>
+				<img src="assets/task6_bilinear_zero.png" alt="Bilinear pixel sampling; mipmap level 0"/>
+				<figcaption>Figure 6.4: Bilinear pixel sampling; mipmap level 0</figcaption>
+			</figure>
+			<figure>
+				<img src="assets/task6_bilinear_nearest.png" alt="Bilinear pixel sampling; nearest mipmap level"/>
+				<figcaption>Figure 6.5: Bilinear pixel sampling; nearest mipmap level</figcaption>
+			</figure>
+			<figure>
+				<img src="assets/task6_bilinear_bilinear.png" alt="Bilinear pixel sampling; linear mipmap level blending"/>
+				<figcaption>Figure 6.6: Bilinear pixel sampling; linear mipmap level blending</figcaption>
+			</figure>
+		</div>
 
 		<h2>(Optional) Task 7: Extra Credit - Draw Something Creative!</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
