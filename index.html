@@ -705,6 +705,26 @@
             </tbody>
         </table>
 
+
+        <h2>Task 7: Extra Credit - 4D Hypercube</h2>
+        <div class="task-tags">
+            <span class="task-tag">CGL::Vector4D</span>
+            <span class="task-tag">4D rotation</span>
+            <span class="task-tag">Perspective projection</span>
+            <span class="task-tag">Procedural SVG</span>
+        </div>
+
+        <p><strong>Idea.</strong> We created a rotating four-dimensional hypercube (tesseract) as our creative SVG. The 16 vertices are represented with <code>CGL::Vector4D</code>, and the 32 edges connect vertex pairs that differ in exactly one coordinate.</p>
+
+        <p><strong>Generation and projection.</strong> For each frame, we rotate the tesseract in the \(XW\) and \(YZ\) planes using <code>CGL::Matrix4x4</code>. We then apply a perspective projection from 4D to 3D, followed by a standard 3D-to-2D perspective projection. The projected edges are exported as ordinary SVG line geometry, so the generated frames can be rendered directly by our existing HW1 rasterizer without modifying the rasterization pipeline.</p>
+
+        <p><strong>Animation.</strong> We generated several SVGs at different rotation angles, rendered the frames to PNG with our rasterizer, and combined the resulting images into the GIF below. Different edge colors indicate the coordinate dimension along which each tesseract edge varies.</p>
+
+        <figure class="single-result">
+            <img src="assets/task7/hypercube.gif" alt="Rotating four-dimensional hypercube"/>
+            <figcaption>Figure 7.1: Rotating 4D hypercube generated from projected SVG frames</figcaption>
+        </figure>
+
 </div>
 	</body>
 </html>
