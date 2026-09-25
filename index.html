@@ -6,6 +6,10 @@
 		<title>CS184/284A Fall 2026 Homework 1 Write-Up</title>
 		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=default'></script>
 		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.30.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+		<script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.30.0/prism.min.js"></script>
+		<script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.30.0/components/prism-c.min.js"></script>
+		<script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.30.0/components/prism-cpp.min.js"></script>
 		<style>
 			h1 {
 				text-align: center;
@@ -52,7 +56,7 @@
 
 			.task2-grid {
 				gap: 16px;
-				width: min(1200px, calc(100vw - 32px));
+				width: min(1100px, calc(100vw - 20px));
 			}
 
 			.comparison-grid.three-column {
@@ -164,6 +168,27 @@
                 background: #f2f4f7;
                 color: #344054;
                 font-size: 0.94em;
+            }
+
+            pre.code-block {
+                margin: 16px 0 20px;
+                padding: 16px 18px;
+                overflow-x: auto;
+                border: 1px solid #d0d5dd;
+                border-radius: 10px;
+                background: #101828;
+                color: #e4e7ec;
+                line-height: 1.5;
+                tab-size: 2;
+            }
+
+            .code-block code {
+                padding: 0;
+                border-radius: 0;
+                background: transparent;
+                color: inherit;
+                font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+                font-size: 0.82rem;
             }
 
             a {
@@ -312,6 +337,22 @@
                 color: var(--accent-dark);
             }
 
+            .table-scroll {
+                margin: 18px 0 24px;
+                overflow-x: auto;
+            }
+
+            .table-scroll .tradeoff-table {
+                min-width: 720px;
+                margin: 0;
+            }
+
+            .benchmark-table th:not(:first-child),
+            .benchmark-table td:not(:first-child) {
+                text-align: right;
+                font-variant-numeric: tabular-nums;
+            }
+
             .mini-heading {
                 margin: 24px 0 8px;
                 font-size: 1rem;
@@ -347,7 +388,6 @@
         
 		<br>
 
-		<strong>Homework1 Requirements:</strong> <a href="https://cs184.eecs.berkeley.edu/fa26/hw/hw1/">https://cs184.eecs.berkeley.edu/fa26/hw/hw1/</a>
 		<h2>Overview</h2>
 
 		<div class="overview-card"><p>
@@ -361,8 +401,6 @@
             <span class="task-tag">4×4 block optimization</span>
         </div>
         <p><strong>Rasterization.</strong> We compute the triangle's axis-aligned bounding box, clamp it to the framebuffer, and evaluate coverage at each pixel center <code>(x + 0.5, y + 0.5)</code>. Three signed edge functions determine whether the sample lies inside the triangle, including samples exactly on an edge.</p>
-        <p><strong>Optimization.</strong> Inside the bounding box, we process 4-by-4 blocks. A block whose four corners are inside can be filled immediately; a block whose four corners are outside the same edge can be rejected. Only boundary blocks require per-pixel tests. The baseline still visits no samples outside the triangle's bounding box, so it is no worse than a standard bounding-box traversal.</p>
-
 
 		<figure>
 			<img src="data:image/png;base64,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" alt="Triangle rasterization under default viewing parameters" style="width:100%"/>
@@ -397,6 +435,85 @@
                 </div>
             </div>
         </details>
+
+        <div class="note-card">
+            <p><strong>Extra Credit — Make your triangle rasterizer super fast.</strong> Inside the bounding box, we process 4-by-4 blocks. A block whose four corners are inside can be filled immediately; a block whose four corners are outside the same edge can be rejected. Only boundary blocks require per-pixel tests. The baseline still visits no samples outside the triangle's bounding box, so it is no worse than a standard bounding-box traversal.</p>
+        </div>
+
+        <pre class="code-block"><code class="language-cpp">int RasterizerImp::classify_edge(float ax, float ay,
+                                 float bx, float by,
+                                 float left, float top,
+                                 float right, float bottom,
+                                 float dir) {
+  float dx = (bx - ax) * dir;
+  float dy = (by - ay) * dir;
+
+  float corner_0 = -(left - ax) * dy + (top - ay) * dx;
+  float corner_1 = -(left - ax) * dy + (bottom - ay) * dx;
+  float corner_2 = -(right - ax) * dy + (top - ay) * dx;
+  float corner_3 = -(right - ax) * dy + (bottom - ay) * dx;
+
+  float corner_max = max({corner_0, corner_1, corner_2, corner_3});
+  float corner_min = min({corner_0, corner_1, corner_2, corner_3});
+
+  if (corner_max &lt; 0) return -1;
+  if (corner_min &gt;= 0) return 1;
+  return 0;
+}</code></pre>
+
+        <p><strong>How the block test works.</strong> We first compute the signed triangle area and use <code>dir</code> to normalize clockwise and counterclockwise triangles to the same inside convention. The bounding box is then divided into 4-by-4 blocks. For each triangle edge, <code>classify_edge()</code> evaluates the edge function only at the block's four extreme sample centers. A negative maximum means the entire block is outside that edge, so the block can be rejected immediately. A nonnegative minimum means the entire block is inside that edge, while a mixed sign identifies a boundary block.</p>
+        <p><strong>Why it is faster.</strong> Blocks classified inside all three edges can be filled without repeating three coverage tests for every sample, and blocks outside any one edge are skipped as soon as that edge is found. Per-sample edge tests are reserved for mixed blocks near the triangle boundary. Large triangles therefore spend most of their time in the cheap accept/reject paths, while the 4-by-4 size keeps the extra corner-test overhead modest for small or thin triangles.</p>
+
+        <h3 class="mini-heading">Block-rasterization benchmark</h3>
+        <div class="note-card"><p>We compared the baseline <code>draw_baseline</code> executable with the block-optimized <code>draw</code> executable. Each per-scene result is the average of 10 runs, measured as the total time spent in <code>rasterize_triangle()</code>.</p></div>
+        <div class="table-scroll">
+            <table class="tradeoff-table benchmark-table">
+                <thead>
+                    <tr>
+                        <th>Scene</th>
+                        <th>Resolution</th>
+                        <th>Baseline avg. (ms)</th>
+                        <th>Block avg. (ms)</th>
+                        <th>Speedup</th>
+                        <th>Time reduction</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>test3.svg</td>
+                        <td>332 × 347</td>
+                        <td>2.173451</td>
+                        <td>1.307930</td>
+                        <td>1.662×</td>
+                        <td>39.82%</td>
+                    </tr>
+                    <tr>
+                        <td>test4.svg</td>
+                        <td>488 × 643</td>
+                        <td>0.290644</td>
+                        <td>0.082443</td>
+                        <td>3.525×</td>
+                        <td>71.63%</td>
+                    </tr>
+                    <tr>
+                        <td>test5.svg</td>
+                        <td>356 × 345</td>
+                        <td>0.425642</td>
+                        <td>0.124638</td>
+                        <td>3.415×</td>
+                        <td>70.72%</td>
+                    </tr>
+                    <tr>
+                        <td>test6.svg</td>
+                        <td>1200 × 1200</td>
+                        <td>2.742915</td>
+                        <td>1.053889</td>
+                        <td>2.603×</td>
+                        <td>61.58%</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
 		<h2>Task 2: Antialiasing by Supersampling</h2>
         <div class="task-tags">
@@ -452,6 +569,30 @@
             <img src="assets/task3/task3_bonus.gif" alt="Animation demonstrating keyboard-controlled rotation"/>
             <figcaption>Figure 3.2: Keyboard-controlled rotation of the rendered scene</figcaption>
         </figure>
+
+        <h3 class="mini-heading">Rotation about the viewport center</h3>
+        <p>The original transformation from SVG coordinates to screen coordinates can be written as</p>
+        \[
+            p_{\text{screen}}
+            = M_{\text{ndc}\to\text{screen}}
+              M_{\text{svg}\to\text{ndc}}
+              p_{\text{svg}}.
+        \]
+        <p>Our NDC center is \(C=(0.5,0.5)\). To rotate the complete rendered view about this center, we compose three transformations:</p>
+        <ol>
+            <li>Translate the center to the origin: \(T(-0.5,-0.5)\).</li>
+            <li>Rotate about the origin: \(R(\theta)\).</li>
+            <li>Translate the center back to its original position: \(T(0.5,0.5)\).</li>
+        </ol>
+        \[
+            M_{\text{view rotation}}
+            = T(0.5,0.5)\,R(\theta)\,T(-0.5,-0.5) 
+            = \begin{bmatrix}
+                c &amp; -s &amp; 0.5s-0.5c+0.5 \\
+                s &amp; c  &amp; -0.5s-0.5c+0.5 \\
+                0 &amp; 0  &amp; 1
+            \end{bmatrix}
+        \]
 
 <h2>Task 4: Barycentric Coordinates</h2>
 		<div class="task-tags"><span class="task-tag">α, β, γ</span><span class="task-tag">Attribute interpolation</span><span class="task-tag">Color gradients</span></div>
